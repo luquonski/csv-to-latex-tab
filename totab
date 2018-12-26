@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(description='csv to  LaTeX syntax table')
 parser.print_help()
 parser.add_argument("origin", help='Ursprungsdatei')
 parser.add_argument("save", help='Zieldatei')
-parser.add_argument("title" = "Hier Titel eingeben", help='Tabellentitel, der im \\caption-Befehl stehen soll')
+parser.add_argument("title", nargs='?', default='<Hier Titel eingeben>', help='Tabellentitel, der im \\caption-Befehl stehen soll')
 args = parser.parse_args()
 
 #load csv to dataframe
