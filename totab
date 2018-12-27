@@ -7,10 +7,26 @@ import argparse
 
 # Get our command line arguments
 parser = argparse.ArgumentParser(description='csv to  LaTeX syntax table')
-parser.add_argument("origin", nargs=1, help='Ursprungsdatei')
-parser.add_argument("save", nargs=2, default='auto_table.txt', help='Zieldatei')
-parser.add_argument("title", nargs='?', default='<Hier Titel eingeben>', help='Tabellentitel, der im \\caption-Befehl stehen soll')
+parser.add_argument("origin", nargs ='?', default= " ", help="Ausgangsdatei")
+parser.add_argument("save", nargs ='?', default="auto.txt", help='Zieldatei')
+parser.add_argument("title", nargs='?',  default="<Enter title here>", help='Tabellentitel, der im \\caption-Befehl stehen soll')
 args = parser.parse_args()
+
+#request missing arguments
+if args.origin == " ":
+    args.origin = input("path to file to convert: ")
+
+if args.save == "auto.txt":
+   s = input("path to savefile name (press enter for default): ")
+if s != "":
+    args.save = s
+    del s
+
+if args.title == "<Enter title here>":
+    s = input("title of table (press enter for default): ")
+if s != "":
+    args.title = s
+    del s
 
 #load csv to dataframe
 df = pd.read_csv(args.origin)
