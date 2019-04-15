@@ -20,13 +20,13 @@ if args.save == "auto.txt":
    s = input("path to savefile name (press enter for default): ")
 if s != "":
     args.save = s
-    del s
+del s
 
 if args.title == "<Enter title here>":
-    s = input("title of table (press enter for default): ")
-if s != "":
-    args.title = s
-    del s
+    t = input("title of table (press enter for default): ")
+if t != "":
+    args.title = t
+del t
 
 #load csv to dataframe
 df = pd.read_csv(args.origin)
