@@ -1,0 +1,180 @@
+#!/usr/bin/env python3
+
+import sys
+import getopt
+import pandas as pd
+
+
+
+def main(argv):
+    inputfile = ""
+    outputfile =""
+    caption = "caption"
+    label = "label"
+    x = 0
+    
+    try:
+        opts, args = getopt.getopt(argv,"hbx",["help", "booktabs", "tabularx"])
+    except getopt.GetoptError:
+        print ("so nicht!!!")
+        sys.exit(2)
+        
+    #organise options
+    options = []
+    values = []
+    for i in range(len(opts)):
+        o, v = opts[i]
+        options.append(o)
+        values.append(v)
+    del o
+    del v
+    print(options)
+    print(values)
+
+    #parse opts and args
+    if ("-h") | ("--booktabs") in options:
+        print("for booktabs set -b option. Filname input/output (this order) optional.")
+        sys.exit(0)
+    if ("-x") in options:
+        x = 1
+    if len(args) > 2:
+        print("Too many arguments. Give only <input.csv> (optional) and <output.csv> (optional).")
+        sys.exit(2)
+    elif len(args) == 2:
+        inputfile = args[0]
+        outputfile = args[1]
+    elif len(args) == 1:
+        inputfile = args[0]
+        out = str(inputfile + ".txt")
+        outputfile = input("output file name (default: " + out + "): ")
+        if outputfile == "":
+            outputfile = out
+        del out
+    else:
+        inputfile = input("input filename: ")
+        if inputfile == "":
+            print("no file selected")
+            sys.exit(2)
+        out = str(inputfile + ".txt")
+        outputfile = input("output file name (default. " + out + "): ")
+        if outputfile == "":
+            outputfile = out
+    
+    #caption
+    cap = input("caption (default: " + caption + "): ")
+    if cap != "":
+        caption = cap
+    del cap
+    
+    #lable
+    lab = input("label (default: " + label + "): ")
+    if lab != "":
+        label = lab
+    del lab
+   
+    if ("-b") in options:
+        booktabs(inputfile, outputfile, caption, label, x)
+    else:
+        normal(inputfile, outputfile, caption, label, x)
+
+#------------------------------------------------------------------------------------------------------------------------
+
+def booktabs(infile, out, caption, label, x):
+    
+    print("compiling booktab table")
+    print("input: " + infile + ", output: " + out)
+    
+    #read csv:
+    df = pd.read_csv(infile)
+    df_columns = df.columns
+    
+    #column organisation
+    organise = ""
+    for i in range(len(df_columns)):
+        organise += "l"
+    decide = input("organise column types? default: " + organise + ". y/n: ")
+    if decide == "y":
+        c = "|  "
+        for column in df_columns:
+            c = c + column + "  |  "
+        print()
+        print(c)
+        print()
+        del c
+        orga = input("column types:")
+        if len(orga) != len(organise):
+            print("wrong number of column types given")
+            sys.exit(2)
+        else:
+            organise = orga
+            del orga
+    elif decide == "n":
+        print("colum types not customized.")
+    else:
+        print("no action specified, column types remain default.")
+            
+    #open file
+    file = open(out, "w+")
+    
+    #head
+    if x == 1:
+        file.write("\\begin{table}[!ht] \n\\begin{centering} \n\\caption{" + caption + "} \n\\begin{tabularx}{" + organise + "} \n\\toprule \n")
+    elif x == 0:
+        file.write("\\begin{table}[!ht] \n\\begin{centering} \n\\caption{" + caption + "} \n\\begin{tabular}{" + organise + "} \n\\toprule \n")
+    else:
+        print("Error while decing x for table head.")
+        syx.exit(1)
+    
+    #write column names
+    i = 0
+    for column in df_columns:
+        if organise[i] == "S":
+            file.write("\\multicolumn{1}{c}{" + column + "}")
+        else:
+            file.write(column)
+        if (i+1) < len(df_columns):
+            file.write("&")
+        elif (i+1) == len(df_columns):
+            file.write("\\\ \n \\midrule \n")
+        else:
+            print("indexing error while writing column names")
+            sys.exit(1)
+        i += 1
+    del i
+    
+    #write body
+    for index, row in df.iterrows():
+        n = 1
+        for column in df_columns:
+            file.write(str(row[column]))
+            if n < len(df_columns):
+                file.write("&")
+            elif n == len(df_columns):
+                file.write("\\\ \n")
+            else:
+                print("counter error while writing table body")
+                sys.exit(1)
+            n += 1
+        
+    #bottom
+    if x == 1:
+         file.write("\\bottomrule\n\\end{tabularx}\n\\label{" + label + "}\n\\end{table}")
+    elif x == 0:
+        file.write("\\bottomrule\n\\end{tabular}\n\\label{" + label + "}\n\\end{table}")
+    else:
+        print("Error while decing x for table foot.")
+        syx.exit(1)
+    
+    #close file
+    file.close()
+    
+    #print confirmation
+    print("done compiling booktable")
+    
+#--------------------------------------------------------------------------------------------------------------------------
+def normal(infile, out, caption, label, x):
+    print("normal table:\ninput: " + infile + ", output: " + out + ", caption: " + caption + ", label: " + label)
+
+        
+if __name__ == "__main__":
+    main(sys.argv[1:])
