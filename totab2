@@ -32,7 +32,7 @@ def main(argv):
     print(values)
 
     #parse opts and args
-    if ("-h") | ("--booktabs") in options:
+    if ("-h") in options:
         print("for booktabs set -b option. Filname input/output (this order) optional.")
         sys.exit(0)
     if ("-x") in options:
@@ -118,7 +118,7 @@ def booktabs(infile, out, caption, label, x):
     
     #head
     if x == 1:
-        file.write("\\begin{table}[!ht] \n\\begin{centering} \n\\caption{" + caption + "} \n\\begin{tabularx}{" + organise + "} \n\\toprule \n")
+        file.write("\\begin{table}[!ht] \n\\centering \n\\caption{" + caption + "} \n\\begin{tabularx}{" + organise + "} \n\\toprule \n")
     elif x == 0:
         file.write("\\begin{table}[!ht] \n\\begin{centering} \n\\caption{" + caption + "} \n\\begin{tabular}{" + organise + "} \n\\toprule \n")
     else:
@@ -135,7 +135,7 @@ def booktabs(infile, out, caption, label, x):
         if (i+1) < len(df_columns):
             file.write("&")
         elif (i+1) == len(df_columns):
-            file.write("\\\ \n \\midrule \n")
+            file.write("\\\ \n\\midrule \n")
         else:
             print("indexing error while writing column names")
             sys.exit(1)
