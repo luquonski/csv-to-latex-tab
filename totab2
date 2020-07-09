@@ -174,6 +174,7 @@ def booktabs(infile, out, caption, label, x):
 #--------------------------------------------------------------------------------------------------------------------------
 def normal(infile, out, caption, label, x):
     print("normal table:\ninput: " + infile + ", output: " + out + ", caption: " + caption + ", label: " + label)
+    print("I haven't programmed that path yet")
 
         
 if __name__ == "__main__":
